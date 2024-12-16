@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>编辑帖子</title>
+    <style>
+        body {
+            background-image: url('/static/images/background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: '微软雅黑', Arial, sans-serif;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 40px auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #337ab7;
+        }
+        .form {
+            padding: 10px;
+        }
+        .form label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .form input, .form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+        }
+        .button {
+            background-color: #337ab7;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .button:hover {
+            background-color: #23527c;
+        }
+        .post-image {
+            max-width: 300px;
+            max-height: 300px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">编辑帖子</h1>
+        <form action="" method="post" class="form" enctype="multipart/form-data">
+            <label for="title">标题:</label>
+            <input type="text" id="title" name="title" value="{{ post.title }}" required>
+            <label for="content">内容:</label>
+            <textarea id="content" name="content" rows="5" required>{{ post.content }}</textarea>
+            <label for="image">图片:</label>
+            <input type="file" id="image" name="image">
+             
+            {% if post.image_path %}
+                <img src="{{ url_for('static', filename=post.image_path) }}" alt="Current Post Image" class="post-image">
+            {% endif %}
+            <input type="submit" value="保存" class="button">
+        </form>
+        <p><a href="{{ url_for('show_post', post_id=post.id) }}" class="button">返回帖子</a></p>
+    </div>
+</body>
+</html>

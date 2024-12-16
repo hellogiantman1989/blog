@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>博客主页</title>
+    <style>
+        body {
+            background-image: url('/static/images/background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: '微软雅黑', Arial, sans-serif;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 40px auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #337ab7;
+        }
+        .post-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .post-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+         .post-list li:last-child {
+            border-bottom: none;
+        }
+        .post-list a {
+            text-decoration: none;
+            color: #337ab7;
+        }
+        .post-list a:hover {
+            color: #23527c;
+        }
+       .button {
+          background-color: #337ab7;
+          color: #fff;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          text-decoration: none;
+          display: inline-block;
+        }
+        .button:hover {
+            background-color: #23527c;
+        }
+        .delete-button {
+            background-color: #d9534f;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete-button:hover {
+            background-color: #c9302c;
+        }
+        .auth-links {
+          text-align: right;
+          margin-bottom: 10px;
+        }
+        .auth-links a {
+            text-decoration: none;
+            color: #337ab7;
+            margin-left: 10px;
+        }
+        .auth-links a:hover {
+            color: #23527c;
+        }
+        .auth-links .new-post-link {
+          color: black;
+        }
+         .alert{
+            margin:10px;
+            padding:10px;
+            border-radius: 5px;
+        }
+         .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+         .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+      .author-name {
+         margin-left: 10px;
+         font-size: 14px;
+      }
+     .create-time {
+        margin-left: 10px;
+        font-size: 12px;
+     }
+    .post-image {
+        max-width: 100px;
+        max-height: 100px;
+        margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">博客主页</h1>
+
+        <div class="auth-links">
+        {% if 'user_id' in session %}
+            <span>Welcome, User!</span>
+            <a href="{{ url_for('logout') }}">Logout</a> | <a href="{{url_for('new_post') }}" class="button new-post-link">New Post</a>
+        {% else %}
+        <a href="{{ url_for('login') }}">Login</a> | <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+        </div>
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <ul class="post-list">
+        {% for post in posts %}
+            <li>
+                <div>
+                     
+                      {% if post.image_path %}
+                           <img src="{{ url_for('static', filename=post.image_path) }}" alt="Post Image" class="post-image">
+                      {% endif %}
+                    <a href="{{ url_for('show_post', post_id=post.id) }}">{{ post.title }}</a>
+                     <span class="author-name">By: {{ post.author.username }}</span>
+                    <span class="create-time">({{ post.created_at.strftime('%Y-%m-%d %H:%M') }})</span>
+                </div>
+                {% if 'user_id' in session and session['user_id'] == post.author.id %}
+                <form action="{{ url_for('delete_post', post_id=post.id) }}" method="post" style="display: inline;">
+                    <input type="submit" value="删除" class="delete-button">
+                </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+
+    </div>
+</body>
+</html>

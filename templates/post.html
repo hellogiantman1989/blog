@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>帖子详情</title>
+    <style>
+        body {
+            background-image: url('/static/images/background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: '微软雅黑', Arial, sans-serif;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 40px auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #337ab7;
+        }
+        .content {
+            padding: 10px;
+        }
+        .button {
+            background-color: #337ab7;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+             display: inline-block;
+        }
+        .button:hover {
+            background-color: #23527c;
+        }
+        .delete-button {
+            background-color: #d9534f;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .delete-button:hover {
+            background-color: #c9302c;
+        }
+        pre {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+        pre code {
+            font-family: monospace;
+        }
+       .author {
+         margin-bottom:10px;
+       }
+      .create-time {
+         margin-bottom:10px;
+       }
+     .post-image {
+         max-width: 300px;
+         max-height: 300px;
+         margin-bottom: 10px;
+     }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">{{ post.title }}</h1>
+        <p class="author">Author: {{post.author.username}}</p>
+        <p class="create-time">Created at: {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        
+        {% if post.image_path %}
+             <img src="{{ url_for('static', filename=post.image_path) }}" alt="Post Image" class="post-image">
+        {% endif %}
+        <div class="content">
+          <pre><code>{{ post_content }}</code></pre>
+        </div>
+
+            <a href="{{ url_for('index') }}" class="button">返回主页</a>
+        {% if 'user_id' in session and session['user_id'] == post.author.id %}
+        <a href="{{ url_for('edit_post', post_id=post.id) }}" class="button">编辑</a>
+          <form action="{{ url_for('delete_post', post_id=post.id) }}" method="post" style="display: inline;">
+            <input type="submit" value="删除" class="delete-button" onclick="return confirm('确定要删除这个帖子吗？')">
+          </form>
+       {% endif %}
+    </div>
+</body>
+</html>
